@@ -1,0 +1,155 @@
+{% extends "organization/sidebar.html" %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+<script>
+var crap = {{ monthly_total.index |safe }}
+var data = {{ monthly_total.data |safe }}
+const ctx = document.getElementById('myChart').getContext('2d');
+const ff = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: crap,
+        datasets: [{
+            label: 'Total amount',
+            data: data,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        },
+        //  {
+        //     label: '# of itit',
+        //     data: [5, 7, 3, 5, 2, 3],
+        //     backgroundColor: [
+        //         'rgba(255, 99, 132, 0.2)',
+        //         'rgba(54, 162, 235, 0.2)',
+        //         'rgba(255, 206, 86, 0.2)',
+        //         'rgba(75, 192, 192, 0.2)',
+        //         'rgba(153, 102, 255, 0.2)',
+        //         'rgba(255, 159, 64, 0.2)'
+        //     ],
+        //     borderColor: [
+        //         'rgba(255, 99, 132, 1)',
+        //         'rgba(54, 162, 235, 1)',
+        //         'rgba(255, 206, 86, 1)',
+        //         'rgba(75, 192, 192, 1)',
+        //         'rgba(153, 102, 255, 1)',
+        //         'rgba(255, 159, 64, 1)'
+        //     ],
+        //     borderWidth: 1
+        // }
+
+        ]
+    },
+ options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Bar Chart'
+      }
+    }
+  }
+});
+const myChart = new Chart(ff, {
+    type: 'doughnut',
+    data: {
+        labels: crap,
+        datasets: [{
+            label: 'Total amount',
+            data: data,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        },
+        ]
+    },
+ options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Bar Chart'
+      }
+    }
+  }
+});
+</script>
+
+
+
+
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{ account.account.name }}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">{{ account.account.accountNumber }}</h6>
+    <p class="card-text">{{ account.account.balance }}</p>
+    <a href="#" class="card-link">{{ monthly_total.index |safe }}</a>
+    <a href="#" class="card-link">Another link</a>
+  </div>
+</div>
+
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Date</th>
+      <th scope="col">type</th>
+      <th scope="col">amount</th>
+      <th scope="col">narration</th>
+      <th scope="col">balance</th>
+    </tr>
+  </thead>
+  {% for state in statement %}
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>{{ state.date }}</td>
+      <td>{{ state.type }}</td>
+      <td>{{ state.amount }}</td>
+      <td>{{ state.narration }}</td>
+      <td>{{ state.balance }}</td>
+    </tr>
+  </tbody>
+  {% endfor %}
+</table>
+
+{% endblock content %}

@@ -12,7 +12,9 @@ from .views import (
 	ContributorsListView,
 	About,
 	Connect,
-	collect
+	collect,
+	auth,
+	dashboard
 	)
 
 urlpatterns = [
@@ -26,5 +28,7 @@ urlpatterns = [
 	path('organization/<int:pk>/contributors/', ContributorsListView, name='contributors'),
     path('about/', About, name='about'),
     path('connect/', Connect, name='connect'),
-    path('collect/<str:code>/', collect, name='collect'),
+    path('dashboard/<int:pk>/<str:auth_id>/', dashboard, name='dashboard'),
+    path('collect/<int:pk>/', collect, name='collect'),
+    path('auth/<int:pk>/<str:auth_id>/', auth, name='auth')
 ]

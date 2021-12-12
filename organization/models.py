@@ -25,6 +25,7 @@ class Organization(models.Model):
 	account_number  = models.CharField(max_length=15, blank=True, null=True)
 	account_name    = models.CharField(max_length=100, blank=True, null=True)
 	bank_name 		= models.CharField(max_length=100, blank=True, null=True)
+	auth_id = models.CharField(max_length=100, blank=True, null=True)
 	type = models.CharField(max_length=20, choices=CHOICES)
 
 
@@ -32,7 +33,7 @@ class Organization(models.Model):
 		return self.name
 
 	def get_absolute_url(self):
-		return reverse('organization-details', kwargs={'pk' : self.pk})
+		return reverse('dashboard', kwargs={'pk' : self.pk, 'auth_id': self.auth_id})
 
 	def is_contributor(self):
 		return self.contributors.all()

@@ -9,6 +9,7 @@ import requests
 from django.conf import settings
 import json
 from pymono import Mono
+import pandas as pd
 
 
 
@@ -106,17 +107,135 @@ def ContributorsListView(request, pk):
 def Connect(request):
 	return render(request, 'organization/connect.html')
 
-def collect(request, code):
-	code = code.strip()
-	mono= Mono(code)
-	(data,status) = mono.Auth()
-	mono.SetUserId(data.get("id"))
-	pp = mono.getAccount()
+# def collect(request):
+# 	code = list(request.GET.keys())
+# 	code = str(code[0])
+# 	code = f""
+# 	print(code)
+# 	mono= Mono(code=code)
+# 	(data,status) = mono.Auth()
+# 	mono.SetUserId(data.get("id"))
+# 	pp = mono.getAccount()
+# 	print("llll")
+# 	pp = "fkfkf"
 
-	context = {
-	'ff':pp
+# 	context = {
+# 	'ff':pp
+# 	}
+# 	return render (request, 'organization/collect.html', context)
+
+def collect(request, pk):
+	code = list(request.GET.keys())
+	code = str(code[0])
+	url = "https://api.withmono.com/account/auth"
+	payload = {"code": code }
+	headers = {
+	"Accept": "application/json",
+	"mono-sec-key": 'test_sk_UJWRFMwbgJ8k2FJ8KMFw',
+	"Content-Type": "application/json"
 	}
-	return (request, 'organization/collect.html', context)
+	response = requests.request("POST", url, json=payload, headers=headers)
+	print(payload)
+	print(response.text)
+	auth_id = response.text
+	context = { "id" : response.text }
+	return redirect('dashboard', pk, auth_id)
+
+def auth(request, pk, auth_id):
+	print("status")
+	organization = Organization.objects.get(pk=pk)
+	organization.auth_id = auth_id
+	organization.save()
+	context = {
+	"id": "successful"
+	}
+	return render (request, 'organization/collect.html', context)
+
+def account_identity(request, pk, auth_id):
+	url = f"https://api.withmono.com/accounts/{auth_id}/identity"
+	headers = {
+	"Accept": "application/json",
+	"mono-sec-key": "test_sk_UJWRFMwbgJ8k2FJ8KMFw"
+	}
+	response = requests.request("GET", url, headers=headers)
+	return response.text
+
+def account_income(request, pk, auth_id):
+	url = f"https://api.withmono.com/accounts/{auth_id}/income"
+	headers = {
+	"Accept": "application/json",
+	"mono-sec-key": "sdssdsdsd",
+	"Content-Type": "application/json"
+	}
+	response = requests.request("GET", url, headers=headers)
+	return response.text
+
+def account_information(request, pk, auth_id):
+	auth_id = auth_id[0]
+	url = f"https://api.withmono.com/accounts/{auth_id}"
+	headers = {
+	"Accept": "application/json",
+	"mono-sec-key": "test_sk_UJWRFMwbgJ8k2FJ8KMFw"
+	}
+	response = requests.request("GET", url, headers=headers)
+	return response.text
+
+def total_amount_spent(data):
+	data = pd.DataFrame(data)
+	data['date'] = data['date'].str.slice(stop=10)
+	data['date'] = pd.to_datetime(data['date'])
+	date_grouped_data = data.groupby(pd.Grouper(key='date', freq='M')).sum()
+	date_grouped_data.index = date_grouped_data.index.strftime('%B')
+	date_grouped_data = date_grouped_data.drop(['balance'], axis=1)
+	context = date_grouped_data.to_dict('split')
+
+	return context
+
+def total_credit_debit(data):
+	data = pd.DataFrame(data)
+	data['date'] = data['date'].str.slice(stop=10)
+	data['date'] = pd.to_datetime(data['date'])
+
+	group_date_1 = data.groupby(pd.Grouper(key='type')).sum()
+	group_date_1 = group_date_1.drop(['balance'], axis=1 )
+	pie = group_date_1.to_dict('split')
+
+	return context
+
+
+def dashboard(request, pk, auth_id):
+	auth_id = json.loads(auth_id)['id']
+
+	url = f"https://api.withmono.com/accounts/{auth_id}/"
+	statement_url = f"https://api.withmono.com/accounts/{auth_id}/statement?period=last6months"
+
+	headers = {
+	"Accept": "application/json",
+	"mono-sec-key": "test_sk_UJWRFMwbgJ8k2FJ8KMFw"
+	}
+
+
+	response = requests.request("GET", url, headers=headers)
+	statement_response = requests.request("GET", statement_url, headers=headers)
+
+	res = json.loads(response.text)
+	statement_res = json.loads(statement_response.text).get('data')
+	monthly_total = total_amount_spent(statement_res)
+
+
+	context = { "account" : res,
+				"statement" : statement_res,
+				"monthly_total":monthly_total,
+				}
+	# print(statement_res.get('data'))
+
+	return render(request, 'organization/collect.html', context )
+
+
+
+
+
+
 
 
 def About(request):

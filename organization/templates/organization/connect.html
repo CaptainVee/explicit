@@ -28,22 +28,10 @@
   var config = {
     key: "test_pk_Gz4Io64VpimAFRVT08SG",
     onSuccess: function (response) {
-      copyToClipboard(response.code);
-      window.location = "https://www.tutorialspoint.com";
-      console.log(JSON.stringify(response));
-      alert(JSON.stringify(response));
+      fetch("/collect/{{ object.id }}?"+response.code);
+      // window.location = "http://localhost:8000/collect/?" + response.code;
 
-      let code = JSON.stringify(response)
-      /**
-       response : { "code": "code_xyz" }
-       you can send this code back to your server to get this
-       authenticated account and start making requests.
-       */
     },
-    onClose: function () {
-
-      console.log('user closed the widget.')
-    }
   };
   connect = new Connect(config);
   connect.setup();
@@ -51,10 +39,7 @@
   launch.onclick = function (e) {
     connect.open();
   };
-</script>
-  <a href="http://localhost:8000/collect/"
-onclick="location.href=this.href+code;return false;">
-  Google</a>
+  </script>
 </body>
 </html>
 

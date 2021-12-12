@@ -1,25 +1,18 @@
-{% extends "organization/sidebar.html" %}
+{% extends "organization/base.html" %}
 {% block content %}
-  <a class="" href="{% url 'create-organization' %}">New Workspace</a>
-<!--   <div class="dropdown">
-  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-    Dropdown link
-  </a>
 
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <li><a class="dropdown-item" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
-  </ul>
-</div> -->
+
+  <a class="" href="{% url 'create-organization' %}">New Organization</a>
+  <div style="display: flex; ">
   {% for organization in organizations %}
+
     <div class="col-sm-6 col-lg-4 mb-4">
-      <div class="card">
-        <img class="workspace-img" src="{{ organization.image.url }}">
-        <p><small class="tiny">{{ organization.created_at | date:'F d, Y' }}</small></p>
+      <div style="margin-right: 2rem;" class="card">
+        <img class="workspace-img" src="{{ organization.profile_pic.url }}">
         <div class="card-body">
           <a class="card-title" href="{{ organization.get_absolute_url}}">{{ organization.name }}</a>
           <p class="card-text">{{ organization.description}}</p>
+          <p><small class="tiny">{{ organization.created_at | date:'F d, Y' }}</small></p>
         </div>
         {% if organization.head == user %}
         <div class="fa-icon">
@@ -30,4 +23,5 @@
       </div>
     </div>
   {% endfor %}
+</div>
 {% endblock content %}
