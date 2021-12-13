@@ -8,7 +8,7 @@ from django.utils import timezone
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	profile_pic = models.ImageField(blank=True, null=True)
+	profile_pic = models.ImageField(default='default.jpg', blank=True, null=True)
 	created_at = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):

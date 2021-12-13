@@ -19,7 +19,7 @@ class Organization(models.Model):
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = models.DateTimeField(default=timezone.now)
 	head = models.ForeignKey(User, on_delete= models.CASCADE)
-	profile_pic = models.ImageField(default='default.jpg', null=True, blank=True)
+	profile_pic = models.ImageField(default='come.jpg', null=True, blank=True)
 	contributors = models.ManyToManyField(User, related_name='contributors', blank=True)
 	address = models.CharField(max_length=150, blank=True, null= True)
 	account_number  = models.CharField(max_length=15, blank=True, null=True)
