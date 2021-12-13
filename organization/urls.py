@@ -11,9 +11,9 @@ from .views import (
 	AddContributor,
 	ContributorsListView,
 	About,
-	Connect,
+	# Connect,
 	collect,
-	auth,
+	# auth,
 	dashboard
 	)
 
@@ -27,8 +27,8 @@ urlpatterns = [
     path('organization/<int:pk>/add-contributor/', AddContributor.as_view(), name='add-contributor'),
 	path('organization/<int:pk>/contributors/', ContributorsListView, name='contributors'),
     path('about/', About, name='about'),
-    path('connect/', Connect, name='connect'),
-    path('dashboard/<int:pk>/<str:auth_id>/', dashboard, name='dashboard'),
+    # path('connect/', Connect, name='connect'),
+    path('dashboard/<int:pk>/', dashboard, name='dashboard'),
     path('collect/<int:pk>/', collect, name='collect'),
-    path('auth/<int:pk>/<str:auth_id>/', auth, name='auth')
+    # path('auth/<int:pk>/<str:auth_id>/', auth, name='auth')
 ]

@@ -10,6 +10,7 @@ from django.conf import settings
 import json
 from pymono import Mono
 import pandas as pd
+from django.contrib import messages
 
 
 
@@ -104,25 +105,9 @@ def ContributorsListView(request, pk):
 	return render(request, 'organization/contributors_list.html', context )
 
 
-def Connect(request):
-	return render(request, 'organization/connect.html')
+# def Connect(request, pk):
+# 	return render(request, 'organization/connect.html')
 
-# def collect(request):
-# 	code = list(request.GET.keys())
-# 	code = str(code[0])
-# 	code = f""
-# 	print(code)
-# 	mono= Mono(code=code)
-# 	(data,status) = mono.Auth()
-# 	mono.SetUserId(data.get("id"))
-# 	pp = mono.getAccount()
-# 	print("llll")
-# 	pp = "fkfkf"
-
-# 	context = {
-# 	'ff':pp
-# 	}
-# 	return render (request, 'organization/collect.html', context)
 
 def collect(request, pk):
 	code = list(request.GET.keys())
@@ -135,21 +120,24 @@ def collect(request, pk):
 	"Content-Type": "application/json"
 	}
 	response = requests.request("POST", url, json=payload, headers=headers)
-	print(payload)
-	print(response.text)
 	auth_id = response.text
-	context = { "id" : response.text }
-	return redirect('dashboard', pk, auth_id)
-
-def auth(request, pk, auth_id):
-	print("status")
 	organization = Organization.objects.get(pk=pk)
 	organization.auth_id = auth_id
 	organization.save()
-	context = {
-	"id": "successful"
-	}
-	return render (request, 'organization/collect.html', context)
+	# context = { "id" : response.text }
+	return redirect('dashboard', pk)
+
+# def auth(request, pk, auth_id):
+# 	organization = Organization.objects.get(pk=pk)
+# 	if organization.auth_id == None:
+# 		collect(request, pk)
+
+	
+	
+# 	context = {
+# 	"id": "successful"
+# 	}
+# 	return render (request, 'organization/collect.html', context)
 
 def account_identity(request, pk, auth_id):
 	url = f"https://api.withmono.com/accounts/{auth_id}/identity"
@@ -198,16 +186,52 @@ def total_credit_debit(data):
 
 	group_date_1 = data.groupby(pd.Grouper(key='type')).sum()
 	group_date_1 = group_date_1.drop(['balance'], axis=1 )
-	pie = group_date_1.to_dict('split')
+	context = group_date_1.to_dict('split')
 
 	return context
 
+def debit_credit(data):
+	data = pd.DataFrame(data)
+	data['date'] = data['date'].str.slice(stop=10)
+	data['date'] = pd.to_datetime(data['date'])
 
-def dashboard(request, pk, auth_id):
+	new_data = data.set_index(['amount','type'])
+	new_data = new_data.drop(['balance', '_id', 'narration'], axis=1 )
+	dict_data = new_data.to_dict('split')
+	index = dict_data['index']
+	date = dict_data['data']
+	debit = []
+	credit = []
+	new_date = []
+	for i in date:
+		new_date.append(i[0].to_pydatetime().strftime("%m-%d-%Y, %H:%M:%S"))
+
+	for i in index:
+		if i[1] == 'debit':
+			debit.append(i[0])
+		else:
+			credit.append(i[0])
+	context = {
+		"date" : new_date,
+		"credit": credit,
+		"debit": debit
+	}
+	return context
+
+
+def dashboard(request, pk):
+
+	organization = Organization.objects.get(pk=pk)
+	if organization.auth_id == None:
+		messages.success(request, 'Please Connect an Account to the Organisation')
+		return redirect('organization-details', pk)
+
+	auth_id = organization.auth_id
 	auth_id = json.loads(auth_id)['id']
 
 	url = f"https://api.withmono.com/accounts/{auth_id}/"
 	statement_url = f"https://api.withmono.com/accounts/{auth_id}/statement?period=last6months"
+	account_info_url = f"https://api.withmono.com/accounts/{auth_id}"
 
 	headers = {
 	"Accept": "application/json",
@@ -217,17 +241,24 @@ def dashboard(request, pk, auth_id):
 
 	response = requests.request("GET", url, headers=headers)
 	statement_response = requests.request("GET", statement_url, headers=headers)
+	account_info = requests.request("GET", account_info_url, headers=headers)
 
 	res = json.loads(response.text)
+	account_info_res = json.loads(account_info.text).get('account')
+
 	statement_res = json.loads(statement_response.text).get('data')
 	monthly_total = total_amount_spent(statement_res)
+	debit_credit_res = debit_credit(statement_res)
 
 
 	context = { "account" : res,
 				"statement" : statement_res,
 				"monthly_total":monthly_total,
+				"account_info" : account_info_res,
+				"last_transaction" : statement_res[0],
+				"debit_credit" :debit_credit_res,
 				}
-	# print(statement_res.get('data'))
+
 
 	return render(request, 'organization/collect.html', context )
 

@@ -33,7 +33,7 @@ class Organization(models.Model):
 		return self.name
 
 	def get_absolute_url(self):
-		return reverse('dashboard', kwargs={'pk' : self.pk, 'auth_id': self.auth_id})
+		return reverse('dashboard', kwargs={'pk' : self.pk })
 
 	def is_contributor(self):
 		return self.contributors.all()
