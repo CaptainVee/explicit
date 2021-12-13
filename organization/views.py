@@ -20,7 +20,7 @@ def welcome(request):
 	of the logged in user as a parameter'''
 	username = request.user.username
 	if username == '':
-		return render(request, 'organization/landing_page.html', {'title': 'Ace'})
+		return render(request, 'organization/landing_pages.html', {'title': 'Ace'})
 	else:
 		return redirect('user-organization', username)
 
