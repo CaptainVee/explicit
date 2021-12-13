@@ -161,7 +161,7 @@ def account_income(request, pk, auth_id):
 	url = f"https://api.withmono.com/accounts/{auth_id}/income"
 	headers = {
 	"Accept": "application/json",
-	"mono-sec-key": "sdssdsdsd",
+	"mono-sec-key": settings.MONO_SEC_KEY,
 	"Content-Type": "application/json"
 	}
 	response = requests.request("GET", url, headers=headers)
@@ -269,7 +269,7 @@ def dashboard(request, pk):
 				}
 
 
-	return render(request, 'organization/collect.html', context )
+	return render(request, 'organization/dashboard.html', context )
 
 
 
