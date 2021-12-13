@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(6$jq0kit#sac-jflg#ep4j82dr8f4skq*3#33%em_$8sd&&gd'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -141,5 +141,6 @@ django_heroku.settings(locals())
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-MONO_SEC_KEY = os.environ.get('MONO-SEC-KEY')
+MONO_SEC_KEY = os.environ.get('MONO_SEC_KEY')
+MONO_PUBLIC_KEY = os.environ.get('MONO_PUBLIC_KEY')
 SITE_ID = 1

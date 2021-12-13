@@ -125,7 +125,7 @@ def collect(request, pk):
 	payload = {"code": code }
 	headers = {
 	"Accept": "application/json",
-	"mono-sec-key": 'test_sk_UJWRFMwbgJ8k2FJ8KMFw',
+	"mono-sec-key": settings.MONO_SEC_KEY,
 	"Content-Type": "application/json"
 	}
 	response = requests.request("POST", url, json=payload, headers=headers)
@@ -152,7 +152,7 @@ def account_identity(request, pk, auth_id):
 	url = f"https://api.withmono.com/accounts/{auth_id}/identity"
 	headers = {
 	"Accept": "application/json",
-	"mono-sec-key": "test_sk_UJWRFMwbgJ8k2FJ8KMFw"
+	"mono-sec-key": settings.MONO_SEC_KEY,
 	}
 	response = requests.request("GET", url, headers=headers)
 	return response.text
@@ -172,7 +172,7 @@ def account_information(request, pk, auth_id):
 	url = f"https://api.withmono.com/accounts/{auth_id}"
 	headers = {
 	"Accept": "application/json",
-	"mono-sec-key": "test_sk_UJWRFMwbgJ8k2FJ8KMFw"
+	"mono-sec-key": settings.MONO_SEC_KEY,
 	}
 	response = requests.request("GET", url, headers=headers)
 	return response.text
@@ -244,7 +244,7 @@ def dashboard(request, pk):
 
 	headers = {
 	"Accept": "application/json",
-	"mono-sec-key": "test_sk_UJWRFMwbgJ8k2FJ8KMFw"
+	"mono-sec-key": settings.MONO_SEC_KEY,
 	}
 
 
@@ -270,11 +270,6 @@ def dashboard(request, pk):
 
 
 	return render(request, 'organization/collect.html', context )
-
-
-
-
-
 
 
 
