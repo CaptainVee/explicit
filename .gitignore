@@ -1,7 +1,6 @@
 ### Django ###
 *.pyc
 local_settings.py
-media
 /staticfiles
 
 
