@@ -15,10 +15,7 @@
           <p><small class="tiny">{{ organization.created_at | date:'F d, Y' }}</small></p>
         </div>
         {% if organization.head == user %}
-        <div class="fa-icon">
-          <a href="{% url 'organization-update' organization.id %}" class="w-button"><i class="fa fa-pencil fa-fw"></i></a>
-          <a href="{% url 'organization-delete' organization.id %}" class="w-button"><i class="fa fa-trash"></i></a>
-        </div>
+          <a href="{% url 'organization-details' organization.id %}"><button type="button" class="btn btn-primary">See more</button></a>
         {% endif %}
       </div>
     </div>

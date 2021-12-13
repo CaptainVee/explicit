@@ -1,7 +1,9 @@
-{% extends "organization/sidebar.html" %}
+{% extends "organization/base.html" %}
 {% block content %}
+<h1>{{ head }} <span style="color: black;" class="badge badge-light">Admin</span></h1>
   {% for contributor in contributors %}
-  <li>{{ head }} <span style="color: black;" class="badge badge-light">Admin</span></li>
-<li>{{ contributor }}</li>
+  	<h1>{{ contributor }}</h1>
   {% endfor %}
+  <p></p>
+  <a href="{% url 'add-contributor' org.id %}"><button type="button" class="btn btn-info">Add People</button></a>
 {% endblock content %}

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .models import Organization
-# from .forms import ContributorForm
+from .forms import ContributorForm
 from django.db.models import Q
 import requests
 from django.conf import settings
@@ -90,15 +90,24 @@ class AddContributor(View):
 		form = ContributorForm(self.request.POST or None)
 		if form.is_valid():
 			email = form.cleaned_data.get('email')
-			contributor = get_object_or_404(User, email= email)
-			organization.contributors.add(contributor)
-			organization.save()
-			return redirect("organization-details", pk)
+			if (User.objects.filter(email=email).exists()):
+				contributor = get_object_or_404(User, email= email)
+				organization.contributors.add(contributor)
+				organization.save()
+				messages.success(request,'Success')
+				return redirect("organization-details", pk)
+
+			messages.warning(request,'This email is not registered on the platform. Sign up')	
+			return redirect('organization-details', pk)
+			
+
+			
 
 def ContributorsListView(request, pk):
 	organization = Organization.objects.get(pk=pk)
 	contributors = organization.contributors.all()
 	context = {
+		'org':organization,
 		'head': organization.head,
 		'contributors':contributors,
 		}

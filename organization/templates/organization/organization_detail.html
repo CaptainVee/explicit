@@ -29,8 +29,10 @@
               </div>
               {% if object.head == user %}
               <div class="fa-icon">
-                <a href="{% url 'organization-update' object.id %}" class="w-button"><i class="fa fa-pencil fa-fw"></i></a>
-                <a href="{% url 'organization-delete' object.id %}" class="w-button"><i class="fa fa-trash"></i></a>
+               <a href="{% url 'organization-delete' object.id %}"><button type="button" class="btn btn-danger">Delete</button></a>
+
+                <a href="{% url 'organization-update' object.id %}"><button type="button" class="btn btn-info">Update</button></a>
+                 <a href="{% url 'contributors' object.id %}"><button type="button" class="btn btn-info">Add People</button></a>
               </div>
               {% endif %}
             </div>
