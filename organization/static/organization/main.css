@@ -1,0 +1,11 @@
+.list-org{
+	display: flex;
+}
+
+@media (max-width: 768px) {
+
+.list-org{
+	display: inherit;
+}
+
+}

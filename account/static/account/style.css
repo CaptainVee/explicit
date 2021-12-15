@@ -36,6 +36,7 @@ span {
 #my-signin2 {
     margin-top: 24px;
 }
+
 .forgot-password {
     line-height: 25px;
     color: #EF5DA8 !important;
@@ -53,6 +54,9 @@ span {
 }
 @media screen and (max-width: 990px) {
     .col-md {
-        display: none;
+        display: inherit;
+    }
+    .row {
+        height: 123vh;
     }
 }
